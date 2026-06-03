@@ -9,7 +9,7 @@ $connection = $database->connect();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes & Mockups</title>
+  <title>Upload Video</title>
   <link rel="stylesheet" href="../css/uploadstyles.css">
 </head>
 <body>

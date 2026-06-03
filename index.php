@@ -1,4 +1,11 @@
 <?php
+session_start();
+
+if (empty($_SESSION['logged_in'])) {
+    header('Location: views/login.php');
+    exit;
+}
+
 require_once __DIR__ . '/core/Database.php';
 
 $database = new Database();
@@ -9,7 +16,7 @@ $connection = $database->connect();
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Wireframes & Mockups</title>
+  <title>index</title>
   <link rel="stylesheet" href="css/styles.css">
 </head>
 <body>
