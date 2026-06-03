@@ -5,26 +5,31 @@ require_once __DIR__ . '/../../core/Database.php';
 
 function redirectTo(string $path): void
 {
+    // Stuur de gebruiker door naar een andere pagina.
     header("Location: {$path}");
     exit;
 }
 
 function failLogin(string $message): void
 {
+    // Login fout opslaan zodat login.php die kan tonen.
     $_SESSION['login_error'] = $message;
     redirectTo('../../views/login.php');
 }
 
 function failRegister(string $message): void
 {
+    // Registratie fout opslaan zodat register.php die kan tonen.
     $_SESSION['register_error'] = $message;
     redirectTo('../../views/register.php');
 }
 
+// De controller mag alleen formulierdata via POST verwerken.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirectTo('../../views/login.php');
 }
 
+// Bepaal of het formulier login of register is.
 $action = $_POST['action'];
 $login = trim($_POST['username'] ?? '');
 $password = $_POST['password'] ?? '';
@@ -34,6 +39,7 @@ try {
     $connection = $database->connect();
 
     if ($action === 'register') {
+        // Velden uit het registratieformulier ophalen.
         $email = trim($_POST['email'] ?? '');
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
@@ -53,6 +59,7 @@ try {
             failRegister('Passwords do not match.');
         }
 
+        // Controleer of er al een gebruiker met dit emailadres bestaat.
         $statement = $connection->prepare(
             'SELECT id
              FROM user
@@ -65,6 +72,7 @@ try {
             failRegister('An account with this email already exists.');
         }
 
+        // Wachtwoord hashen voordat het in de database komt.
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
         $statement = $connection->prepare(
@@ -81,10 +89,12 @@ try {
         redirectTo('../../views/login.php');
     }
 
+    // Vanaf hier wordt de normale login afgehandeld.
     if ($login === '' || $password === '') {
         failLogin('Please fill in both fields.');
     }
 
+    // Zoek de gebruiker op met het ingevulde emailadres.
     $statement = $connection->prepare(
         'SELECT id, email, password, role
          FROM user
@@ -95,6 +105,7 @@ try {
 
     $user = $statement->fetch();
 
+    // Controleer het ingevulde wachtwoord met de hash uit de database.
     $passwordMatches = $user && (
         password_verify($password, $user['password'])
         || hash_equals($user['password'], $password)
@@ -104,8 +115,10 @@ try {
         failLogin('Invalid email or password.');
     }
 
+    // Nieuwe sessie id voor extra veiligheid na succesvol inloggen.
     session_regenerate_id(true);
 
+    // Gebruikersgegevens bewaren in de sessie.
     $_SESSION['user_id'] = $user['id'];
     $_SESSION['email'] = $user['email'];
     $_SESSION['role'] = $user['role'];
@@ -113,6 +126,7 @@ try {
 
     redirectTo('../../index.php');
 } catch (PDOException $exception) {
+    // Algemene foutmelding tonen zonder database details te lekken.
     if ($action === 'register') {
         failRegister('Something went wrong. Please try again.');
     }

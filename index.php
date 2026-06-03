@@ -7,23 +7,14 @@ if (empty($_SESSION['logged_in'])) {
 }
 
 require_once __DIR__ . '/core/Database.php';
+require_once __DIR__ . '/app/models/video.php';
 
 $database = new Database();
 $connection = $database->connect();
+$videoModel = new Video($connection);
 
-$metadataPath = __DIR__ . '/uploads/videos/videos.json';
-$videos = [];
-
-if (is_file($metadataPath)) {
-    $json = file_get_contents($metadataPath);
-    $videos = json_decode($json, true);
-
-    if (!is_array($videos)) {
-        $videos = [];
-    }
-}
-
-$videos = array_reverse($videos);
+// Haal alle geuploade videos op voor de homepagina.
+$videos = $videoModel->getAll();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -63,16 +54,16 @@ $videos = array_reverse($videos);
         <div class="video-grid">
           <?php foreach ($videos as $uploadedVideo): ?>
             <?php
-              $file = $uploadedVideo['file'] ?? '';
+              // Maak paden voor de thumbnail en de aparte kijkpagina.
+              $file = $uploadedVideo['filename'];
               $videoPath = 'uploads/videos/' . rawurlencode($file);
-              $watchPath = 'views/video.php?file=' . rawurlencode($file);
+              $watchPath = 'views/video.php?id=' . urlencode((string) $uploadedVideo['id']);
             ?>
             <a class="video-card video-card-link" href="<?= htmlspecialchars($watchPath, ENT_QUOTES, 'UTF-8') ?>">
               <video class="video-player video-thumbnail" preload="metadata" muted>
                 <source src="<?= htmlspecialchars($videoPath, ENT_QUOTES, 'UTF-8') ?>">
               </video>
               <h3 class="video-title"><?= htmlspecialchars($uploadedVideo['title'], ENT_QUOTES, 'UTF-8') ?></h3>
-              <p class="video-meta"><?= htmlspecialchars($uploadedVideo['category'], ENT_QUOTES, 'UTF-8') ?></p>
               <?php if (!empty($uploadedVideo['description'])): ?>
                 <p class="video-description"><?= htmlspecialchars($uploadedVideo['description'], ENT_QUOTES, 'UTF-8') ?></p>
               <?php endif; ?>

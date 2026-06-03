@@ -6,34 +6,25 @@ if (empty($_SESSION['logged_in'])) {
     exit;
 }
 
-$requestedFile = basename($_GET['file'] ?? '');
-$metadataPath = __DIR__ . '/../uploads/videos/videos.json';
-$videos = [];
+require_once __DIR__ . '/../core/Database.php';
+require_once __DIR__ . '/../app/models/video.php';
 
-if (is_file($metadataPath)) {
-    $json = file_get_contents($metadataPath);
-    $videos = json_decode($json, true);
+$videoId = (int) ($_GET['id'] ?? 0);
+$database = new Database();
+$connection = $database->connect();
+$videoModel = new Video($connection);
+$currentVideo = $videoModel->findById($videoId);
 
-    if (!is_array($videos)) {
-        $videos = [];
-    }
-}
-
-$currentVideo = null;
-
-foreach ($videos as $video) {
-    if (($video['file'] ?? '') === $requestedFile) {
-        $currentVideo = $video;
-        break;
-    }
-}
-
+// Als de video niet bestaat, terug naar home.
 if (!$currentVideo) {
     header('Location: ../index.php');
     exit;
 }
 
-$videoPath = '../uploads/videos/' . rawurlencode($currentVideo['file']);
+// Tel een view zodra de kijkpagina opent.
+$videoModel->addView($videoId);
+
+$videoPath = '../uploads/videos/' . rawurlencode($currentVideo['filename']);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -70,7 +61,6 @@ $videoPath = '../uploads/videos/' . rawurlencode($currentVideo['file']);
         <source src="<?= htmlspecialchars($videoPath, ENT_QUOTES, 'UTF-8') ?>">
       </video>
       <h2 class="watch-title"><?= htmlspecialchars($currentVideo['title'] ?? 'Untitled video', ENT_QUOTES, 'UTF-8') ?></h2>
-      <p class="video-meta"><?= htmlspecialchars($currentVideo['category'] ?? 'Uncategorized', ENT_QUOTES, 'UTF-8') ?></p>
       <?php if (!empty($currentVideo['description'])): ?>
         <p class="watch-description"><?= htmlspecialchars($currentVideo['description'], ENT_QUOTES, 'UTF-8') ?></p>
       <?php endif; ?>

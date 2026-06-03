@@ -13,6 +13,8 @@ $connection = $database->connect();
 
 $uploadError = $_SESSION['upload_error'] ?? '';
 $uploadSuccess = $_SESSION['upload_success'] ?? '';
+
+// Meldingen maar een keer tonen na redirect.
 unset($_SESSION['upload_error']);
 unset($_SESSION['upload_success']);
 ?>
@@ -55,6 +57,7 @@ unset($_SESSION['upload_success']);
         <p class="upload-success"><?= htmlspecialchars($uploadSuccess, ENT_QUOTES, 'UTF-8') ?></p>
       <?php endif; ?>
 
+      <!-- Formulier stuurt titel, beschrijving en videobestand naar de controller. -->
       <form class="upload-form" action="../app/controllers/videoController.php" method="POST" enctype="multipart/form-data">
         <div class="form-group file-group">
           <label class="file-upload-box" for="video">
@@ -71,15 +74,6 @@ unset($_SESSION['upload_success']);
         <div class="form-group">
           <label for="description">Description</label>
           <textarea class="form-input" id="description" name="description" placeholder="Tell viewers about your video..."></textarea>
-        </div>
-        <div class="form-group">
-          <label for="category">Category</label>
-          <select class="form-input" id="category" name="category" required>
-            <option value="">Select a category</option>
-            <option value="gaming">Gaming</option>
-            <option value="music">Music</option>
-            <option value="movies">Movies</option>
-          </select>
         </div>
         <button class="button" type="submit">Upload Video</button>
       </form>
