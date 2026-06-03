@@ -56,8 +56,8 @@ $videos = $videoModel->getAll();
             <?php
               // Maak paden voor de thumbnail en de aparte kijkpagina.
               $file = $uploadedVideo['filename'];
-              $videoPath = 'uploads/videos/' . rawurlencode($file);
-              $watchPath = 'views/video.php?id=' . urlencode((string) $uploadedVideo['id']);
+              $videoPath = 'uploads/videos/' . $file;
+              $watchPath = 'views/video.php?id=' . (int) $uploadedVideo['id'];
             ?>
             <a class="video-card video-card-link" href="<?= htmlspecialchars($watchPath, ENT_QUOTES, 'UTF-8') ?>">
               <video class="video-player video-thumbnail" preload="metadata" muted>

@@ -21,9 +21,6 @@ if (!$currentVideo) {
     exit;
 }
 
-// Tel een view zodra de kijkpagina opent.
-$videoModel->addView($videoId);
-
 $videoPath = '../uploads/videos/' . rawurlencode($currentVideo['filename']);
 ?>
 <!DOCTYPE html>

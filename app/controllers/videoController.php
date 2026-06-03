@@ -60,8 +60,7 @@ $uploadDir = __DIR__ . '/../../uploads/videos';
 
 // Maak een unieke bestandsnaam zodat uploads elkaar niet overschrijven.
 $extension = pathinfo($video['name'], PATHINFO_EXTENSION);
-$safeExtension = preg_replace('/[^a-zA-Z0-9]/', '', $extension);
-$fileName = uniqid('video_', true) . ($safeExtension !== '' ? ".{$safeExtension}" : '');
+$fileName = uniqid('video_', true) . '.' . $extension;
 $targetPath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
 
 // Verplaats het uploadbestand naar de uploads map.
