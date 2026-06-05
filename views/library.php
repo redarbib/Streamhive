@@ -17,8 +17,7 @@ if (empty($_SESSION['logged_in'])) {
 <body>
   <header class="topbar">
     <div class="top-left">
-      <div class="burger">☰</div>
-      <div class="logo">STREAMHIVE</div>
+      <a class="logo" href="../index.php">STREAMHIVE</a>
     </div>
     <div class="search">
       <span>Search videos...</span>

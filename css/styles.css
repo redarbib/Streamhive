@@ -36,16 +36,10 @@ body {
   gap: 12px;
 }
 
-.burger {
-  font-size: 18px;
-  padding: 6px 10px;
-  border: 1px solid #2e2e2e;
-  border-radius: 6px;
-  background: #111111;
-}
-
 .logo {
   font-size: 18px;
+  color: #ffffff;
+  text-decoration: none;
   font-weight: 700;
   letter-spacing: 0.6px;
 }
@@ -252,6 +246,72 @@ body {
   line-height: 1.5;
 }
 
+.comments-section {
+  max-width: 760px;
+  margin-top: 28px;
+}
+
+.comments-title {
+  margin: 0 0 14px;
+  font-size: 18px;
+}
+
+.comment-form {
+  display: grid;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+.comment-input {
+  min-height: 92px;
+  resize: vertical;
+  line-height: 1.4;
+}
+
+.comment-error {
+  color: var(--yellow);
+  margin: 0 0 12px;
+  font-size: 14px;
+  font-weight: 700;
+}
+
+.comment-list {
+  display: grid;
+  gap: 14px;
+}
+
+.comment-card {
+  display: grid;
+  grid-template-columns: 36px 1fr;
+  gap: 12px;
+}
+
+.comment-avatar {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: var(--yellow);
+  border: 2px solid #1f1f1f;
+}
+
+.comment-body {
+  min-width: 0;
+}
+
+.comment-name {
+  display: block;
+  margin-bottom: 4px;
+  color: #ffffff;
+  font-size: 14px;
+}
+
+.comment-text {
+  margin: 0;
+  color: #d0d0d0;
+  line-height: 1.45;
+  overflow-wrap: anywhere;
+}
+
 .thumb-large {
   height: 120px;
   border-radius: 8px;
@@ -361,11 +421,6 @@ body {
   padding: 14px 20px;
 }
 
-.upload-page .burger {
-  background: #111111;
-  border-color: #2e2e2e;
-  color: #ffffff;
-}
 
 .upload-page .logo {
   color: #ffffff;
@@ -379,14 +434,6 @@ body {
 
 .upload-page .avatar {
   border-color: #111111;
-}
-
-.upload-page .layout {
-  display: block;
-}
-
-.upload-page .sidebar {
-  display: none;
 }
 
 .upload-content {

@@ -11,13 +11,7 @@ function redirectToUpload(): void
     exit;
 }
 
-// Alleen ingelogde gebruikers mogen uploaden.
-if (empty($_SESSION['logged_in'])) {
-    header('Location: ../../views/login.php');
-    exit;
-}
-
-// Direct openen van deze controller is niet de bedoeling.
+// Direct openen van deze controller is niet mogelijk.
 if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
     redirectToUpload();
 }
@@ -37,7 +31,6 @@ if ($video['error'] !== UPLOAD_ERR_OK) {
     redirectToUpload();
 }
 
-// Toegestane video bestandsformaten.
 $allowedTypes = [
     'video/mp4',
     'video/webm',
@@ -58,7 +51,7 @@ if (!in_array($mimeType, $allowedTypes, true)) {
 
 $uploadDir = __DIR__ . '/../../uploads/videos';
 
-// Maak een unieke bestandsnaam zodat uploads elkaar niet overschrijven.
+// Maak een uniekesnaam zodat uploads elkaar niet overschrijven.
 $extension = pathinfo($video['name'], PATHINFO_EXTENSION);
 $fileName = uniqid('video_', true) . '.' . $extension;
 $targetPath = $uploadDir . DIRECTORY_SEPARATOR . $fileName;
