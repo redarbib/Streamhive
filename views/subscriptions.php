@@ -24,6 +24,7 @@ if (empty($_SESSION['logged_in'])) {
       <span>Search videos...</span>
     </div>
     <div class="top-right">
+      <a class="logout-link" href="../app/controllers/logoutController.php">Logout</a>
       <a class="avatar" href="account.php" aria-label="Account"></a>
     </div>
   </header>
