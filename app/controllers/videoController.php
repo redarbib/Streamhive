@@ -4,7 +4,7 @@ session_start();
 require_once __DIR__ . '/../../core/Database.php';
 require_once __DIR__ . '/../models/video.php';
 
-function redirectToUpload(): void
+function redirectToUpload()
 {
     // Na upload of fout terug naar de uploadpagina.
     header('Location: ../../views/Upload.php');

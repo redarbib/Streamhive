@@ -10,7 +10,7 @@ class Comment
         $this->connection = $connection;
     }
 
-    public function create(int $userId, int $videoId, string $content): void
+    public function create(int $userId, int $videoId, string $content)
     {
         // Nieuwe comment opslaan bij de gekozen video.
         $statement = $this->connection->prepare(

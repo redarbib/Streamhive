@@ -6,11 +6,6 @@ if (empty($_SESSION['logged_in'])) {
     exit;
 }
 
-require_once __DIR__ . '/../core/Database.php';
-
-$database = new Database();
-$connection = $database->connect();
-
 $uploadError = $_SESSION['upload_error'] ?? '';
 $uploadSuccess = $_SESSION['upload_success'] ?? '';
 
@@ -62,7 +57,7 @@ unset($_SESSION['upload_success']);
         <div class="form-group file-group">
           <label class="file-upload-box" for="video">
             <span class="file-upload-icon">Upload</span>
-            <span class="file-upload-title">Drag and drop your video here</span>
+            <span class="file-upload-title" id="selected-file-name">Drag and drop your video here</span>
             <span class="file-upload-button">Select File</span>
           </label>
           <input class="file-input" type="file" id="video" name="video" accept="video/*" required>
@@ -79,5 +74,16 @@ unset($_SESSION['upload_success']);
       </form>
     </main>
   </div>
+  <script>
+    const videoInput = document.getElementById('video');
+    const selectedFileName = document.getElementById('selected-file-name');
+
+    videoInput.addEventListener('change', () => {
+      // Toon meteen welk bestand de gebruiker heeft gekozen.
+      selectedFileName.textContent = videoInput.files.length
+        ? videoInput.files[0].name
+        : 'Drag and drop your video here';
+    });
+  </script>
 </body>
 </html>

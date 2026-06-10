@@ -43,7 +43,7 @@ class Like
         return (bool) $statement->fetch();
     }
 
-    public function toggleVideoLike(int $userId, int $videoId): void
+    public function toggleVideoLike(int $userId, int $videoId)
     {
         if ($this->userLikedVideo($userId, $videoId)) {
             $statement = $this->connection->prepare(
