@@ -14,8 +14,8 @@ class Video
     {
         // Nieuwe video opslaan na een succesvolle upload.
         $statement = $this->connection->prepare(
-            'INSERT INTO video (user_id, title, description, filename, created_at)
-             VALUES (:user_id, :title, :description, :filename, NOW())'
+            'INSERT INTO video (user_id, title, description, filename, views, created_at)
+             VALUES (:user_id, :title, :description, :filename, 0, NOW())'
         );
 
         $statement->execute([
@@ -30,7 +30,7 @@ class Video
     {
         // Nieuwste videos eerst tonen op de homepagina.
         $statement = $this->connection->query(
-            'SELECT id, user_id, title, description, filename, created_at
+            'SELECT id, user_id, title, description, filename, views, created_at
              FROM video
              ORDER BY created_at DESC'
         );
@@ -38,11 +38,29 @@ class Video
         return $statement->fetchAll();
     }
 
-    public function findById(int $id): ?array
+    public function search(string $search)
+    {
+        // Zoek videos op titel of beschrijving.
+        $statement = $this->connection->prepare(
+            'SELECT id, user_id, title, description, filename, views, created_at
+             FROM video
+             WHERE title LIKE :title_search
+             OR description LIKE :description_search
+             ORDER BY created_at DESC'
+        );
+        $statement->execute([
+            'title_search' => '%' . $search . '%',
+            'description_search' => '%' . $search . '%',
+        ]);
+
+        return $statement->fetchAll();
+    }
+
+    public function findById(int $id)
     {
         // Een video ophalen voor de pagina.
         $statement = $this->connection->prepare(
-            'SELECT id, user_id, title, description, filename, created_at
+            'SELECT id, user_id, title, description, filename, views, created_at
              FROM video
              WHERE id = :id
              LIMIT 1'
@@ -52,5 +70,16 @@ class Video
         $video = $statement->fetch();
 
         return $video ?: null;
+    }
+
+    public function incrementViews(int $id)
+    {
+        // Verhoog de teller wanneer iemand de video bekijkt.
+        $statement = $this->connection->prepare(
+            'UPDATE video
+             SET views = views + 1
+             WHERE id = :id'
+        );
+        $statement->execute(['id' => $id]);
     }
 }

@@ -26,9 +26,10 @@ unset($_SESSION['upload_success']);
     <div class="top-left">
       <a class="logo" href="../index.php">STREAMHIVE</a>
     </div>
-    <div class="search">
-      <span>Search videos...</span>
-    </div>
+    <form class="search" action="../index.php" method="GET">
+      <input type="search" name="search" placeholder="Search videos...">
+      <button type="submit">Search</button>
+    </form>
     <div class="top-right">
       <a class="logout-link" href="../app/controllers/logoutController.php">Logout</a>
       <a class="avatar" href="account.php" aria-label="Account"></a>

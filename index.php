@@ -12,9 +12,10 @@ require_once __DIR__ . '/app/models/video.php';
 $database = new Database();
 $connection = $database->connect();
 $videoModel = new Video($connection);
+$search = trim($_GET['search'] ?? '');
 
-// Haal alle geuploade videos op voor de homepagina.
-$videos = $videoModel->getAll();
+// Haal videos op voor de homepagina, eventueel gefilterd op zoektekst.
+$videos = $search === '' ? $videoModel->getAll() : $videoModel->search($search);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -29,9 +30,10 @@ $videos = $videoModel->getAll();
     <div class="top-left">
       <a class="logo" href="index.php">STREAMHIVE</a>
     </div>
-    <div class="search">
-      <span>Search videos...</span>
-    </div>
+    <form class="search" action="index.php" method="GET">
+      <input type="search" name="search" placeholder="Search videos..." value="<?= htmlspecialchars($search, ENT_QUOTES, 'UTF-8') ?>">
+      <button type="submit">Search</button>
+    </form>
     <div class="top-right">
       <a class="logout-link" href="app/controllers/logoutController.php">Logout</a>
       <a class="avatar" href="views/account.php" aria-label="Account"></a>
@@ -47,9 +49,9 @@ $videos = $videoModel->getAll();
     </aside>
 
     <main class="content">
-      <h2 class="section-title">Recommended</h2>
+      <h2 class="section-title"><?= $search === '' ? 'Recommended' : 'Search results for "' . htmlspecialchars($search, ENT_QUOTES, 'UTF-8') . '"' ?></h2>
       <?php if (empty($videos)): ?>
-        <p class="empty-message">No videos uploaded yet.</p>
+        <p class="empty-message"><?= $search === '' ? 'No videos uploaded yet.' : 'No videos found.' ?></p>
       <?php else: ?>
         <div class="video-grid">
           <?php foreach ($videos as $uploadedVideo): ?>
@@ -64,6 +66,7 @@ $videos = $videoModel->getAll();
                 <source src="<?= htmlspecialchars($videoPath, ENT_QUOTES, 'UTF-8') ?>">
               </video>
               <h3 class="video-title"><?= htmlspecialchars($uploadedVideo['title'], ENT_QUOTES, 'UTF-8') ?></h3>
+              <p class="video-meta"><?= number_format((int) $uploadedVideo['views']) ?> views</p>
               <?php if (!empty($uploadedVideo['description'])): ?>
                 <p class="video-description"><?= htmlspecialchars($uploadedVideo['description'], ENT_QUOTES, 'UTF-8') ?></p>
               <?php endif; ?>

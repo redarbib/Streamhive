@@ -25,6 +25,9 @@ if (!$currentVideo) {
     exit;
 }
 
+$videoModel->incrementViews($videoId);
+$currentVideo['views'] = (int) $currentVideo['views'] + 1;
+
 $videoPath = '../uploads/videos/' . rawurlencode($currentVideo['filename']);
 $likes = $likeModel->countForVideo($videoId);
 $likedByUser = $likeModel->userLikedVideo((int) $_SESSION['user_id'], $videoId);
@@ -46,9 +49,10 @@ unset($_SESSION['comment_error']);
     <div class="top-left">
       <a class="logo" href="../index.php">STREAMHIVE</a>
     </div>
-    <div class="search">
-      <span>Search videos...</span>
-    </div>
+    <form class="search" action="../index.php" method="GET">
+      <input type="search" name="search" placeholder="Search videos...">
+      <button type="submit">Search</button>
+    </form>
     <div class="top-right">
       <a class="logout-link" href="../app/controllers/logoutController.php">Logout</a>
       <a class="avatar" href="account.php" aria-label="Account"></a>
@@ -68,7 +72,10 @@ unset($_SESSION['comment_error']);
         <source src="<?= htmlspecialchars($videoPath, ENT_QUOTES, 'UTF-8') ?>">
       </video>
       <div class="watch-header">
-        <h2 class="watch-title"><?= htmlspecialchars($currentVideo['title'] ?? 'Untitled video', ENT_QUOTES, 'UTF-8') ?></h2>
+        <div>
+          <h2 class="watch-title"><?= htmlspecialchars($currentVideo['title'] ?? 'Untitled video', ENT_QUOTES, 'UTF-8') ?></h2>
+          <p class="video-meta"><?= number_format((int) $currentVideo['views']) ?> views</p>
+        </div>
         <form action="../app/controllers/likeController.php" method="POST">
           <input type="hidden" name="video_id" value="<?= (int) $currentVideo['id'] ?>">
           <button class="like-button <?= $likedByUser ? 'liked' : '' ?>" type="submit">
