@@ -10,7 +10,7 @@ class Video
         $this->connection = $connection;
     }
 
-    public function create(int $userId, string $title, string $description, string $filename): void
+    public function create(int $userId, string $title, string $description, string $filename)
     {
         // Nieuwe video opslaan na een succesvolle upload.
         $statement = $this->connection->prepare(
@@ -26,7 +26,7 @@ class Video
         ]);
     }
 
-    public function getAll(): array
+    public function getAll()
     {
         // Nieuwste videos eerst tonen op de homepagina.
         $statement = $this->connection->query(

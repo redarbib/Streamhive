@@ -27,13 +27,13 @@ $videos = $videoModel->getAll();
 <body>
   <header class="topbar">
     <div class="top-left">
-      <div class="burger">☰</div>
-      <div class="logo">STREAMHIVE</div>
+      <a class="logo" href="index.php">STREAMHIVE</a>
     </div>
     <div class="search">
       <span>Search videos...</span>
     </div>
     <div class="top-right">
+      <a class="logout-link" href="app/controllers/logoutController.php">Logout</a>
       <a class="avatar" href="views/account.php" aria-label="Account"></a>
     </div>
   </header>

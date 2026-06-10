@@ -15,7 +15,6 @@ unset($_SESSION['register_error']);
 <body>
   <header class="topbar">
     <div class="top-left">
-      <div class="burger" aria-hidden="true">☰</div>
       <div class="logo">STREAMHIVE</div>
     </div>
   </header>

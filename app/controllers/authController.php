@@ -3,21 +3,21 @@ session_start();
 
 require_once __DIR__ . '/../../core/Database.php';
 
-function redirectTo(string $path): void
+function redirectTo(string $path)
 {
     // Stuur de gebruiker door naar een andere pagina.
     header("Location: {$path}");
     exit;
 }
 
-function failLogin(string $message): void
+function failLogin(string $message)
 {
     // Login fout opslaan zodat login.php die kan tonen.
     $_SESSION['login_error'] = $message;
     redirectTo('../../views/login.php');
 }
 
-function failRegister(string $message): void
+function failRegister(string $message)
 {
     // Registratie fout opslaan zodat register.php die kan tonen.
     $_SESSION['register_error'] = $message;
