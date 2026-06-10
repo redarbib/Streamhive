@@ -1,9 +1,26 @@
 <?php
+
 session_start();
 
-// Alle sessiegegevens verwijderen bij uitloggen.
-$_SESSION = [];
-session_destroy();
+class LogoutController
+{
+    public function handle()
+    {
+        $this->logout();
+        $this->redirectTo('../../views/login.php');
+    }
 
-header('Location: ../../views/login.php');
-exit;
+    private function logout()
+    {
+        $_SESSION = [];
+        session_destroy();
+    }
+
+    private function redirectTo(string $path)
+    {
+        header('Location: ' . $path);
+        exit;
+    }
+}
+
+(new LogoutController())->handle();
