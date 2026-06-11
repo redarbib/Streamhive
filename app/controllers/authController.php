@@ -10,16 +10,19 @@ class AuthController
 
     public function __construct()
     {
+        // Maak verbinding met de database voor login en registratie.
         $database = new Database();
         $this->connection = $database->connect();
     }
 
     public function handle()
     {
+        // Deze controller verwerkt alleen formulieren die met POST zijn verstuurd.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirectTo('../../views/login.php');
         }
 
+        // Bepaal of het formulier bedoeld is voor registreren of inloggen.
         $action = $_POST['action'] ?? 'login';
 
         try {
@@ -40,10 +43,12 @@ class AuthController
 
     private function register()
     {
+        // Haal de ingevulde registratiegegevens op uit het formulier.
         $email = trim($_POST['email'] ?? '');
         $password = $_POST['password'] ?? '';
         $confirmPassword = $_POST['confirm_password'] ?? '';
 
+        // Controleer of de invoer geldig en compleet is.
         if ($email === '' || $password === '' || $confirmPassword === '') {
             $this->failRegister('Please fill in all fields.');
         }
@@ -64,8 +69,10 @@ class AuthController
             $this->failRegister('An account with this email already exists.');
         }
 
+        // Sla wachtwoorden nooit leesbaar op, maar als veilige hash.
         $passwordHash = password_hash($password, PASSWORD_DEFAULT);
 
+        // Maak de nieuwe gebruiker aan met de standaardrol user.
         $statement = $this->connection->prepare(
             'INSERT INTO user (email, password, role)
              VALUES (:email, :password, :role)'
@@ -82,6 +89,7 @@ class AuthController
 
     private function login()
     {
+        // Haal de loginvelden op uit het formulier.
         $login = trim($_POST['username'] ?? '');
         $password = $_POST['password'] ?? '';
 
@@ -91,12 +99,15 @@ class AuthController
 
         $user = $this->findUserByEmail($login);
 
+        // Stop het inloggen als de gebruiker niet bestaat of het wachtwoord fout is.
         if (!$user || !$this->passwordMatches($password, $user['password'])) {
             $this->failLogin('Invalid email or password.');
         }
 
+        // Vernieuw het sessie-id na succesvol inloggen tegen session fixation.
         session_regenerate_id(true);
 
+        // Bewaar de belangrijkste gebruikersgegevens in de sessie.
         $_SESSION['user_id'] = $user['id'];
         $_SESSION['email'] = $user['email'];
         $_SESSION['role'] = $user['role'];
@@ -107,6 +118,7 @@ class AuthController
 
     private function emailExists(string $email)
     {
+        // Controleer of er al een account bestaat met dit e-mailadres.
         $statement = $this->connection->prepare(
             'SELECT id
              FROM user
@@ -120,6 +132,7 @@ class AuthController
 
     private function findUserByEmail(string $email)
     {
+        // Zoek de gebruiker op zodat het wachtwoord gecontroleerd kan worden.
         $statement = $this->connection->prepare(
             'SELECT id, email, password, role
              FROM user
@@ -135,6 +148,7 @@ class AuthController
 
     private function passwordMatches(string $password, string $storedPassword)
     {
+        // Ondersteun gehashte wachtwoorden en oude platte wachtwoorden.
         return password_verify($password, $storedPassword)
             || hash_equals($storedPassword, $password);
     }

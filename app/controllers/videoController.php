@@ -11,6 +11,7 @@ class VideoController
 
     public function __construct()
     {
+        // Maak het videomodel klaar voor databaseacties.
         $database = new Database();
         $connection = $database->connect();
         $this->videoModel = new Video($connection);
@@ -18,10 +19,12 @@ class VideoController
 
     public function handle()
     {
+        // Uploads mogen alleen via een POST-formulier binnenkomen.
         if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
             $this->redirectToUpload();
         }
 
+        // Lees de titel, beschrijving en het videobestand uit het formulier.
         $title = trim($_POST['title'] ?? '');
         $description = trim($_POST['description'] ?? '');
         $video = $_FILES['video'] ?? null;
@@ -30,6 +33,7 @@ class VideoController
 
         $fileName = $this->storeUploadedVideo($video);
 
+        // Sla de videogegevens op nadat het bestand succesvol is verplaatst.
         $this->videoModel->create((int) $_SESSION['user_id'], $title, $description, $fileName);
 
         $_SESSION['upload_success'] = 'Video uploaded successfully.';
@@ -38,6 +42,7 @@ class VideoController
 
     private function validateUpload(string $title, ?array $video)
     {
+        // Controleer of de verplichte uploadgegevens aanwezig zijn.
         if ($title === '' || !$video) {
             $this->failUpload('Please fill in all upload fields.');
         }
@@ -53,6 +58,7 @@ class VideoController
 
     private function isAllowedVideoType(string $temporaryPath)
     {
+        // Alleen gangbare videotypes toestaan.
         $allowedTypes = [
             'video/mp4',
             'video/webm',
@@ -65,11 +71,13 @@ class VideoController
         $mimeType = finfo_file($fileInfo, $temporaryPath);
         finfo_close($fileInfo);
 
+        // Vergelijk het echte MIME-type van het bestand met de toegestane lijst.
         return in_array($mimeType, $allowedTypes, true);
     }
 
     private function storeUploadedVideo(array $video)
     {
+        // Geef elk uploadbestand een unieke naam om overschrijven te voorkomen.
         $uploadDir = __DIR__ . '/../../uploads/videos';
         $extension = pathinfo($video['name'], PATHINFO_EXTENSION);
         $fileName = uniqid('video_', true) . '.' . $extension;

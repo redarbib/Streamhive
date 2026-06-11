@@ -45,6 +45,7 @@ class Like
 
     public function toggleVideoLike(int $userId, int $videoId)
     {
+        // Als de like al bestaat verwijderen we hem, anders maken we hem aan.
         if ($this->userLikedVideo($userId, $videoId)) {
             $statement = $this->connection->prepare(
                 'DELETE FROM likes
